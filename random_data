@@ -1,0 +1,37 @@
+import numpy as np
+import pandas as pd
+
+sampleNo = 10000 
+mu = 6000
+sigma = 1200
+# 生成一维正态分布数据
+np.random.seed(0)
+price = np.random.normal(mu, sigma, sampleNo) #mu为0，sigma为1时，为标准正态分布（相当于randn）
+price = price.round(2)
+
+
+import time
+import random
+
+a1=(2017,1,1,0,0,0,0,0,0)       #设置开始日期时间元组（2017-01-01 00：00：00）
+a2=(2017,12,31,23,59,59,0,0,0)  #设置结束日期时间元组（2017-12-31 23：59：59）
+start=time.mktime(a1)  #生成开始时间戳
+end=time.mktime(a2)   #生成结束时间戳
+#随机生成10000个日期字符串
+date_list = []
+for i in range(10000):
+  t=random.randint(start,end)  #在开始和结束时间戳中随机取出一个
+  date_tuple=time.localtime(t)     #将时间戳生成时间元组
+  date=time.strftime("%Y-%m-%d %H:%M:%S",date_tuple) #将时间元组转成格式化字符串
+  date_list.append(date)
+
+#生成订单号
+PO_list = []
+for i in date_list:
+    timeArray = time.strptime(i, "%Y-%m-%d %H:%M:%S")
+    otherStyleTime = time.strftime("%Y%m%d%H%M%S", timeArray)
+    PO_list.append("PO"+otherStyleTime)
+
+df = pd.DataFrame({"订单号":PO_list,"日期":date_list,"销售额":price})
+df = df.set_index('日期')  #该处不能用reindex，reindex是根据新索引进行重排，是索引重排，不是修改index
+df.index = pd.DatetimeIndex(df.index) #将索引转变为datetime格式的索引
