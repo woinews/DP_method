@@ -1,0 +1,53 @@
+#源数据中的日期为标准格式日期，精确到分秒，现需按月份统计销售额(表格中字段为订单号、日期（2017年）、销售额)
+#方法一：
+#用time库的resample方法处理日期
+import os
+import pandas as pd
+import time
+
+path = 'D:\data'
+os.chdir(path)
+
+df = pd.read_excel('salelist.xlsx',index_col = '日期') #读取数据并将日期设定为索引
+
+df.resample('M')['销售额(RMB)'].sum()  #按月汇总销售额，"MS"是每个月第一天为开始日期, "M"是每个月最后一天（仅索引显示区别，汇总结果无区别）
+df.resample('Q')['销售额(RMB)'].sum()  #按季度汇总销售额，"QS"是每个季度第一天为开始日期, "Q"是每个季度最后一天
+df.resample('AS')['销售额(RMB)'].sum() #按年汇总销售额，"AS"是每年第一天为开始日期, "A是每年最后一天
+
+#按“年-月”显示汇总数据时，加上.to_period('M')
+df.resample('M')['销售额(RMB)'].sum().to_period('M')
+df.resample('Q')['销售额(RMB)'].sum().to_period('Q')
+df.resample('A')['销售额(RMB)'].sum().to_period('A')
+
+
+
+#方法二：将日期中的月份单独取出成为对应的一列，使用groupby或pivot_table进行聚合
+
+import os
+import pandas as pd
+
+path = 'D:\data'
+os.chdir(path)
+df = pd.read_excel('salelist.xlsx')
+
+doc = []
+for i in range(len(df['日期'])):
+    doc.append(df.loc[i,'日期'].month)
+    
+df['月份'] = doc
+
+pd.pivot_table(df,index = ['月份'],values=['销售额(RMB)'],aggfunc=sum)
+#df.groupby('月份')['销售额(RMB)'].sum()
+
+
+#方法三：在读入excel时指定索引为日期，在groupby中使用lambda函数处理索引
+import os
+import pandas as pd
+
+path = 'D:\data'
+os.chdir(path)
+df = pd.read_excel('salelist.xlsx',index_col = '日期')
+df.groupby(lambda x:x.month).sum()   #按月汇总
+df.groupby(lambda x:x.weekday).sum()  #按一周中的每天汇总
+df.groupby(lambda x:x.day).sum()      #按一个月中的每天汇总
+df.groupby(lambda x:x.quarter).mean() #按季度汇总
