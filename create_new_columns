@@ -1,0 +1,13 @@
+from random_data import df
+
+
+#将2017下半年中销售额大于等于8000的标记为A，其余标记为B
+def function(x,y):
+    if x >6 and y >= 8000:
+        return 'A'
+    else:
+        return 'B'
+
+df['月份'] = df.index.month
+    
+df['Type'] = df.apply(lambda x :function(x['月份'],x['销售额']),axis = 1)  #axis = 1表示作用于每一行
