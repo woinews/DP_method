@@ -27,8 +27,9 @@ for i,row in df.loc[:,Qty_list].iterrows():
         Qty_data_list.remove('')
     Qty_data.append(Qty_data_list)
 
-Qty = pd.DataFrame(Qty_data)
-Qty.columns = Qty_list 
+Qty = pd.DataFrame(columns = range(4))
+Qty = Qty.append(Qty_data)
+Qty.columns = Qty_list
 df.loc[:,Qty_list] = 0
 df.loc[:,Qty_list] = Qty
 
@@ -40,7 +41,8 @@ for i,row in df.loc[:,Price_list].iterrows():
         Price_data_list.remove('')
     Price_data.append(Price_data_list)
 
-Price = pd.DataFrame(Price_data)
+Price = pd.DataFrame(columns = range(4))
+Price = Price.append(Price_data)
 Price.columns = Price_list
 df.loc[:,Price_list] = 0
 df.loc[:,Price_list] = Price
