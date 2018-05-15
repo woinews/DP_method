@@ -1,0 +1,70 @@
+import numpy as np
+import pandas as pd
+import random
+from random_data import sales_data #使用随机生成的正态分布的销售数据
+
+saler_list = ['张集','王飞','陈晨','李莉','王涵','刘章','黄海','魏波']
+#新增一列销售员名单，随机分配saler_list
+sales_data['销售员'] = ""
+sales_data['销售员'] = sales_data['销售员'].apply(lambda x : random.choice(saler_list))
+
+sales_data['销售额'].describe() #查看销售额的统计情况
+
+sales_data.loc[5:8,'销售额'] = 0 #将数据集的6-8行销售额修改为0
+
+sales_data.loc[sales_data.销售额>5000] #选取销售额大于5k的数据
+
+sales_data["2017-09-01"]   #获取某日的数据
+sales_data["2017-09"]   #获取某月的数据
+
+sales_data["2017-09"].loc[sales_data["2017-09"].销售额>5000]  #获取某月销售额大于5k的数据
+
+sales_data['销售额'] = sales_data['销售额'].replace(0,np.nan)    #将0填充为nan
+
+#sales_data.dropna()   #删除缺失值
+#sales_data.dropna(how='all')  #删除一整行都为na
+#sales_data.dropna(thresh=2)  #行数据中至少有两个na值
+#sales_data.dropna(subset=['销售额'])  #删除销售额为na的行
+#sales_data.drop(axis=1, how='all') #删除整列均为na的列
+#sales_data.drop(axis=1. how='any') #删除任意列为na的列
+
+
+sales_data.销售额 = sales_data.销售额.fillna(sales_data.销售额.mean()) #用平均值填充缺失值
+
+sales_data.订单号 = sales_data.订单号.str.lower() #将订单号修改为小写
+#注意：如果是对包含数字的列修改为大小写时，可能会使纯数字部分订单号出错，这里转换下数据类型即可
+sales_data.订单号 = sales_data.订单号.astype(str).str.upper() #将订单号修改为大写
+
+#对列名进行重命名
+sales_data = sales_data.rename(columns = {'订单号':'订单编号','销售额':'RMB销售额'})
+
+#保存为CSV文件,指定编码格式为UTF-8
+
+sales_data.to_csv('sales_data_file.csv', encoding='utf-8')
+
+#读取csv文件，指定列数据类型，指定日期为索引
+data = pd.read_csv('sales_data_file.csv', dtype={'订单编号': str,'销售额':float},index_col = '日期')
+
+#新建一个DataFrame用于存储销售员和销售组的关系
+saler_groups = pd.DataFrame({'销售员':saler_list,'组别':['销售一组','销售二组']*4})
+
+#合并sales_data与saler_groups，将“组别”添加到销售数据中[左连接]
+sales_data.merge(saler_groups,on = "销售员",how = 'left')
+
+#销售员去重
+set_sales = set(list(sales_data.销售员))
+drop_sales = list(sales_data.销售员.drop_duplicates())
+
+#数据去重
+#sales_data.drop_duplicates()
+
+#更改销售员名称
+sales_data.销售员 = sales_data.销售员.replace("刘章","刘二哈")
+
+#根据销售额降序排列
+sales_data.sort_values("RMB销售额",ascending = False)
+
+#按销售员汇总销售额
+sales_data.groupby(['销售员']).sum()
+
+#按日期汇总请看另一个文件
