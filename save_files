@@ -1,0 +1,7 @@
+import pandas as pd
+from random_data import sales_data #使用随机生成的正态分布的销售数据
+
+writer = pd.ExcelWriter('sales_data.xlsx')
+sales_data.to_excel(writer, sheet_name='sheet1')  #放进sheet1表中
+sales_data.to_excel(writer, sheet_name='sheet2')  #放进sheet2表中
+writer.save()
