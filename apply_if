@@ -1,0 +1,43 @@
+# 一、数字分组
+import pandas as pd
+
+Numbers = {'numbers': [1,2,3,4,5,6,7,8,9,10]}
+df = pd.DataFrame(Numbers,columns=['numbers'])
+
+df.loc[df.numbers <= 4, '小于等于4'] = '是' 
+df.loc[df.numbers > 4, '小于等于4'] = '否' 
+
+print (df)
+
+# 二、数字分组 + apply_lambda_if
+df['小于等于4'] = df['numbers'].apply(lambda x: '是' if x <= 4 else '否')
+
+print (df)
+
+# 三、字符串
+Names1 = {'First_name': ['Jon','Bill','Maria','Emma']}
+df = pd.DataFrame(Names1,columns=['First_name'])
+
+df.loc[df.First_name == 'Bill', 'name_match'] = 'Match'  
+df.loc[df.First_name != 'Bill', 'name_match'] = 'Mis-Match'  
+ 
+print (df)
+
+# 四、字符串 + apply_lambda_if
+Names1 = {'First_name': ['Jon','Bill','Maria','Emma']}
+df = pd.DataFrame(Names1,columns=['First_name'])
+
+df['name_match'] = df['First_name'].apply(lambda x: 'match' if x == 'Bill' else 'Mis-match')
+
+print (df)
+
+# 五、字符串 + or/and
+Names1 = {'First_name': ['Jon','Bill','Maria','Emma']}
+df = pd.DataFrame(Names1,columns=['First_name'])
+
+df.loc[(df.First_name == 'Bill') | (df.First_name == 'Emma'), 'name_match'] = 'Match'  
+df.loc[(df.First_name != 'Bill') & (df.First_name != 'Emma'), 'name_match'] = 'Mis-Match'  
+
+print (df)
+
+参考：https://datatofish.com/if-condition-in-pandas-dataframe/
