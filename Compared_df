@@ -1,0 +1,12 @@
+import pandas as pd
+
+df1 = DataFrame({
+                'Buyer': ['Carl', 'Carl', 'Carl'],
+                'Quantity': [18, 3, 5, ]})
+
+df2 = DataFrame({
+                'Buyer': ['Carl', 'Mark', 'Carl', 'Carl'],
+                'Quantity': [2, 1, 18, 5]})
+
+merged = df1.merge(df2, indicator=True, how='outer')
+merged[merged['_merge'] == 'right_only']
