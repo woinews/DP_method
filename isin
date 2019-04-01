@@ -1,0 +1,5 @@
+import pandas as pd
+
+df = pd.DataFrame({'col':['A','A','B'],'val':[1,2,1]})
+
+df_A2 = df[df['col'].isin(['A']) & df['val'].isin([2])]
