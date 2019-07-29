@@ -59,3 +59,4 @@ find_5 = [_ for _ in find_5 if _[1] >0 ]
 print('\n匹配结果:\n')
 for i in find_5:
     print(top500.iloc[i[0]]['公司名称(中英文)'], '  匹配度%.2f%%' %(i[1]*100))
+ 
